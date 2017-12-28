@@ -1,0 +1,5 @@
+spring:
+  profiles:
+     active: dev #发布时修改成发布的配置文件 prod
+
+

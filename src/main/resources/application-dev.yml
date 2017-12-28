@@ -1,0 +1,30 @@
+server:
+  port: 80
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql:   true
+    generate-ddl: true
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/belief?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: tiger
+    usessl: false
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,slf4j
