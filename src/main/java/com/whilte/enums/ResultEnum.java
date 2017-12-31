@@ -1,5 +1,6 @@
 package com.whilte.enums;
 
+
 public enum ResultEnum {
     // 成功的
     SUCCESS                    (200,"请求成功！"),

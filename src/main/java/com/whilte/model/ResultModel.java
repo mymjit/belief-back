@@ -1,10 +1,13 @@
 package com.whilte.model;
 
+import org.springframework.stereotype.Component;
+
 /**
   * @date        : 2017/12/28
   * @author      : whilte
   * @Description : 统一的数据返回格式模型
   */
+@Component
 public class ResultModel<T> {
 
     private Integer code;
