@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
 /**
@@ -20,7 +19,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableScheduling
 @SpringBootApplication
 @ServletComponentScan
-@EnableRedisHttpSession
 public class BeliefBackApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BeliefBackApplication.class, args);

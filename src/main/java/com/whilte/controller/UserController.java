@@ -1,9 +1,7 @@
 package com.whilte.controller;
 
 import com.whilte.domail.User;
-import com.whilte.manager.impl.RedisTokenManager;
 import com.whilte.model.ResultModel;
-import com.whilte.model.TokenModel;
 import com.whilte.service.UserService;
 import com.whilte.util.ResultUtil;
 import org.slf4j.Logger;
@@ -24,15 +22,13 @@ import javax.servlet.http.HttpSession;
 public class UserController {
     private final static Logger logger = LoggerFactory.getLogger(UserController.class);
 
-
     @Autowired
     private ResultModel resultModel;
 
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private RedisTokenManager redisTokenManager;
+
     /**
       * @Method       : login
       * @MethodParam  : [user]
@@ -40,9 +36,12 @@ public class UserController {
       * @Description  : 登入接口
       */
     @PostMapping("/login")
-    public ResultModel login(User user,HttpSession session){
-        logger.info("UserController -> login ：sessionId : {}",session.getId());
-        return ResultUtil.success();
+    public ResultModel login(User user){
+        resultModel = loginAndRegisterUserVerification(user);
+        if ( 200 == resultModel.getCode() ){
+            resultModel = userService.userLogin(user);
+        }
+        return resultModel;
     }
 
 
@@ -53,27 +52,52 @@ public class UserController {
       * @Description  : 注册接口
       */
     @PostMapping("/register")
-    public ResultModel register (User user, HttpSession session){
-        resultModel = ResultUtil.error();
+    public ResultModel register (User user){
+        resultModel = loginAndRegisterUserVerification(user);
+        if ( 200 == resultModel.getCode() ){
+            resultModel = userService.userRegister(user);
+        }
+        return resultModel;
+    }
+
+    @PostMapping("/signOut")
+    public void signOut( User user ){
         if ( null != user ){
-            if ( !"".equals(user.getTelephoneNumber()) &&  10 < user.getTelephoneNumber().length() ){
-                if ( !"".equals(user.getPassword()) && 7 < user.getPassword().length() ){
-                    resultModel = userService.userRegister(user);
-                    session.setAttribute("user",resultModel.getData());
-                    String id = session.getId();
-                    TokenModel tokenModel = redisTokenManager.createToken(id);
-                    tokenModel.setId(null);
-                    resultModel.setData(tokenModel );
+            if ( null != user && !"".equals( user.getTelephoneNumber() ) ){
+                userService.signOut(user);
+            }
+        }
+    }
+
+
+
+    /**
+      * @Method       : 
+      * @MethodParam  : 
+      * @MethodReturn :  
+      * @Description  : 注册登入对账号和密码的校验
+      */
+    private ResultModel loginAndRegisterUserVerification(User user){
+        resultModel = ResultUtil.error();
+        // 手机号码正则表达式
+        String telephoneNumberRegex ="^((17[0-9])|(14[0-9])|(13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$";
+        // 密码正则表达式
+        String passwordRegex  = "(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$";
+        if ( null != user ) {
+            if ( user.getTelephoneNumber().matches( telephoneNumberRegex ) ){
+                if ( user.getPassword().matches( passwordRegex ) ){
+                    resultModel.setCode(200);
+                    resultModel.setMsg("账号密码验证成功！");
                 } else {
-                    resultModel.setMsg("请输入正确的密码信息！");
+                    resultModel.setMsg("请填写正确的密码信息!");
                 }
             } else {
-                resultModel.setMsg("请输入正确的账号信息！");
+                resultModel.setMsg("请填写正确的账号信息!");
             }
         } else {
             resultModel.setMsg("请填写账号密码！");
         }
-        return resultModel;
+        return  resultModel;
     }
 
 }

@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 @Entity(name = "belief_user")
 public class User implements Serializable {
+    private static final long serialVersionUID = -1L;
+
     /** 主键 */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +34,11 @@ public class User implements Serializable {
     private int state;
 
     public User() {
+    }
+
+    public User(String userName, int age) {
+        this.userName = userName;
+        this.age = age;
     }
 
     public User(String userName, String alias, String sex, int age, String idCard, String email,
